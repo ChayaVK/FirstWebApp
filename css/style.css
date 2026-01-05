@@ -1,0 +1,79 @@
+body {
+      font-family: Arial, sans-serif;
+      background: #e6e0e7;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 8px;
+      margin-top: 5px;
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #007bff;
+      color: white;
+    }
+
+    .actions button {
+      margin-right: 5px;
+      width: auto;
+    }
+
+    .edit {
+      background: #ffc107;
+      border: none;
+      color: #000;
+    }
+
+    .delete {
+      background: #dc3545;
+      border: none;
+      color: white;
+    }
+
+    .save {
+      background: #28a745;
+      border: none;
+      color: white;
+    }
