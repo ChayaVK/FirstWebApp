@@ -1,5 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+
+const corsOptions = {
+  origin: "https://chayavk.github.io", // replace with your GitHub Pages URL
+};
+
+app.use(cors(corsOptions));
 const bodyParser = require('body-parser');
 
 const app = express();
