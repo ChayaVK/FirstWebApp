@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:3000/users"; // our backend API
+const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API
 
 let users = [];
 let editMode = false;
