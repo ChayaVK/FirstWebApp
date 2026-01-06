@@ -7,6 +7,7 @@ let editMode = false;
 const form = document.getElementById("userForm");
 const nameInput = document.getElementById("name");
 const emailInput = document.getElementById("email");
+const mobileInput = document.getElementById("mobile");
 const roleInput = document.getElementById("role");
 const userIdInput = document.getElementById("userId");
 
@@ -32,6 +33,7 @@ function renderUsers() {
     row.innerHTML = `
       <td>${user.name}</td>
       <td>${user.email}</td>
+      <td>${user.mobile}</td>
       <td>${user.role}</td>
       <td class="actions">
         <button class="edit" onclick="editUser(${user.id})">Edit</button>
@@ -47,11 +49,13 @@ function validateForm() {
 
   const nameError = document.getElementById("nameError");
   const emailError = document.getElementById("emailError");
+  const mobileError = document.getElementById("mobileError");
   const roleError = document.getElementById("roleError");
 
   // Clear errors
   nameError.textContent = "";
   emailError.textContent = "";
+  mobileError.textContent = "";
   roleError.textContent = "";
 
   if (!nameInput.value.trim()) {
@@ -65,6 +69,15 @@ function validateForm() {
   } else if (!emailInput.value.includes("@")) {
     emailError.textContent = "Invalid email format";
     valid = false;
+  }
+
+  if (!mobileInput.value.trim()) {
+    mobileError.textContent = "PhoneNumber is required";
+    valid = false;
+  }else if(!/^\d{10}$/.test(mobileInput.value)){
+  mobileError.textContent = "Mobile number must be 10 digits";
+  valid = false;
+
   }
 
   if (!roleInput.value) {
@@ -85,6 +98,7 @@ form.addEventListener("submit", async (e) => {
   const userData = {
     name: nameInput.value,
     email: emailInput.value,
+    mobile: mobileInput.value,
     role: roleInput.value
   };
 
@@ -123,6 +137,7 @@ function editUser(id) {
   const user = users.find(u => u.id === id);
   nameInput.value = user.name;
   emailInput.value = user.email;
+  mobileInput.value = user.mobile;
   roleInput.value = user.role;
   userIdInput.value = user.id;
   editMode = true;

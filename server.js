@@ -3,19 +3,18 @@ const cors = require('cors');
 
 const app = express();
 
-/*
+/*                          
 const corsOptions = {
   origin: "https://chayavk.github.io", // replace with your GitHub Pages URL
 };
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); //Render Api (Production)
 */
 const bodyParser = require('body-parser');
-
 
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors()); //local
 app.use(bodyParser.json());
 
 // Temporary in-memory storage for users
@@ -39,9 +38,9 @@ res.json(user);
 
 // 2️⃣ Add a user
 app.post('/users', (req, res) => {
-  const { name, email, role } = req.body;
+  const { name, email, mobile,role } = req.body;
   const id = Date.now(); // simple unique ID
-  const newUser = { id, name, email, role };
+  const newUser = { id, name, email,mobile, role };
   users.push(newUser);
   res.json(newUser);
 });
@@ -49,13 +48,14 @@ app.post('/users', (req, res) => {
 // 3️⃣ Update a user
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
-  const { name, email, role } = req.body;
+  const { name, email, mobile, role } = req.body;
 
   const user = users.find(u => u.id == id);
   if (!user) return res.status(404).json({ message: "User not found" });
 
   user.name = name;
   user.email = email;
+  user.mobile = mobile;
   user.role = role;
 
   res.json(user);

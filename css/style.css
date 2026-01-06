@@ -1,9 +1,10 @@
 body {
   font-family: Arial, sans-serif;
-  background: url('https://www.shutterstock.com/image-photo/corporate-data-management-system-dms-260nw-304480604.jpg');
+  background: url('../images/people.jpg');
   background-size: cover;      
   background-position: center; 
   background-repeat: no-repeat;
+  min-height: 100vh; 
   padding: 20px;
 }
 
