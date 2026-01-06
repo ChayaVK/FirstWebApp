@@ -1,17 +1,40 @@
 body {
-      font-family: Arial, sans-serif;
-      background: #e6e0e7;
-      padding: 20px;
-    }
+  font-family: Arial, sans-serif;
+  background: url('https://www.shutterstock.com/image-photo/corporate-data-management-system-dms-260nw-304480604.jpg');
+  background-size: cover;      
+  background-position: center; 
+  background-repeat: no-repeat;
+  padding: 20px;
+}
+
 
     h1 {
       text-align: center;
+      color: white;
     }
+ nav ul {
+  list-style: none; /* remove bullets */
+  display: flex;
+  gap: 20px; /* spacing between items */
+  padding: 0;
+}
+
+nav ul li a {
+  text-decoration: none; /* remove underline */
+  color: #ff6600;       /* orange color */
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #e8eaed; /* color when hovering */
+}
 
     .container {
       max-width: 800px;
       margin: auto;
-      background: #fff;
+      background: rgba(255,255,255,0.8);
       padding: 20px;
       border-radius: 6px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
