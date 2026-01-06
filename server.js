@@ -3,17 +3,18 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors(corsOptions));
+
 const corsOptions = {
   origin: "https://chayavk.github.io", // replace with your GitHub Pages URL
 };
+app.use(cors(corsOptions));
 const bodyParser = require('body-parser');
 
 
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+//app.use(cors());
 app.use(bodyParser.json());
 
 // Temporary in-memory storage for users
