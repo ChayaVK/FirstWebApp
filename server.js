@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 const PORT = 3000;
 
 // Middleware
-app.use(cors()); //local
+//app.use(cors()); //local
 app.use(bodyParser.json());
 
 // Temporary in-memory storage for users
