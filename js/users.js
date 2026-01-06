@@ -1,4 +1,5 @@
-const apiUrl = "http://localhost:3000/users"; // or your Render API
+//const apiUrl = "http://localhost:3000/users";
+const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
 
 async function fetchUsers() {
   try {

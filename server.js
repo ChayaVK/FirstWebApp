@@ -3,12 +3,12 @@ const cors = require('cors');
 
 const app = express();
 
-/*                          
+                      
 const corsOptions = {
   origin: "https://chayavk.github.io", // replace with your GitHub Pages URL
 };
 app.use(cors(corsOptions)); //Render Api (Production)
-*/
+
 const bodyParser = require('body-parser');
 
 const PORT = 3000;
