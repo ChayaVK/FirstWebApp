@@ -1,5 +1,5 @@
-//const apiUrl = "http://localhost:3000/users";
-const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
+const apiUrl = "http://localhost:3000/users";
+//const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
 
 let users = [];
 let editMode = false;
@@ -102,35 +102,46 @@ form.addEventListener("submit", async (e) => {
     role: roleInput.value
   };
 
-  try {
-    if (editMode) {
-      // Edit user
-      await fetch(`${apiUrl}/${userIdInput.value}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-      });
+  console.log("Sending user data:", userData);  // <-- log request data
 
+  try {
+    const method = editMode ? "PUT" : "POST";
+    const url = editMode ? `${apiUrl}/${userIdInput.value}` : apiUrl;
+    console.log(`Sending ${method} request to: ${url}`);
+
+    const response = await fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    });
+
+    console.log("Raw response:", response);
+
+    if (!response.ok) {
+      const errData = await response.json();
+      console.error("Backend returned error:", errData);
+      return;
+    }
+
+    const data = await response.json();
+    console.log("Response from backend:", data);
+
+    if (editMode) {
       const index = users.findIndex(u => u.id == userIdInput.value);
       users[index] = { ...users[index], ...userData };
       editMode = false;
     } else {
-      // Add user
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-      });
-      const newUser = await response.json();
-      users.push(newUser);
+      users.push(data);
     }
 
     form.reset();
     renderUsers();
+
   } catch (error) {
     console.error("Error saving user:", error);
   }
 });
+
 
 // 5️⃣ Edit user
 function editUser(id) {

@@ -1,71 +1,112 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const { Pool } = require('pg');        // <-- add this
+require('dotenv').config();            // <-- add this
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-                      
+// CORS settings
 const corsOptions = {
-  origin: "https://chayavk.github.io", // replace with your GitHub Pages URL
+  origin: ["https://chayavk.github.io", "http://localhost:3000", "http://127.0.0.1:5500"], 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"]
 };
-app.use(cors(corsOptions)); //Render Api (Production)
-
-const bodyParser = require('body-parser');
-
-const PORT = 3000;
+app.use(cors(corsOptions));
 
 // Middleware
-//app.use(cors()); //local
 app.use(bodyParser.json());
 
-// Temporary in-memory storage for users
-let users = []; // Each user: { id, name, email, role }
+// ----------------- PostgreSQL Setup -----------------
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // allows Node to connect without verifying certificate
+  },
+});
+
+// Optional: test connection
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) console.error('DB connection error:', err);
+  else console.log('Postgres connected:', res.rows[0]);
+});
+
 
 // Routes
 // 1️⃣ Get all users
-app.get('/users', (req, res) => {
-  res.json(users);
+app.get('/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Database error' });
+  }
 });
+
 
 //1.1 Get user by id
-app.get('/users/:id',(req,res)=>
-{
-const {id} = req.params;
-const user = users.find(u => u.id == id);
-if(!user) return res.status(404).json({message: "User not found"});
-res.json(user);
-
+app.get('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Database error' });
+  }
 });
+
 
 // 2️⃣ Add a user
-app.post('/users', (req, res) => {
-  const { name, email, mobile,role } = req.body;
-  const id = Date.now(); // simple unique ID
-  const newUser = { id, name, email,mobile, role };
-  users.push(newUser);
-  res.json(newUser);
+app.post('/users', async (req, res) => {
+  try {
+    const { name, email, mobile, role } = req.body;
+    const result = await pool.query(
+      'INSERT INTO users (name, email, mobile, role) VALUES ($1, $2, $3, $4) RETURNING *',
+      [name, email, mobile, role]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Database error' });
+  }
 });
+
 
 // 3️⃣ Update a user
-app.put('/users/:id', (req, res) => {
-  const { id } = req.params;
-  const { name, email, mobile, role } = req.body;
+app.put('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, mobile, role } = req.body;
 
-  const user = users.find(u => u.id == id);
-  if (!user) return res.status(404).json({ message: "User not found" });
+    const result = await pool.query(
+      'UPDATE users SET name=$1, email=$2, mobile=$3, role=$4 WHERE id=$5 RETURNING *',
+      [name, email, mobile, role, id]
+    );
 
-  user.name = name;
-  user.email = email;
-  user.mobile = mobile;
-  user.role = role;
-
-  res.json(user);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Database error' });
+  }
 });
 
+
 // 4️⃣ Delete a user
-app.delete('/users/:id', (req, res) => {
-  const { id } = req.params;
-  users = users.filter(u => u.id != id);
-  res.json({ message: "User deleted" });
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('DELETE FROM users WHERE id=$1 RETURNING *', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: 'User deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Database error' });
+  }
 });
 
 // Start server
