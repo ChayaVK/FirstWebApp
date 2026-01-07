@@ -8,12 +8,33 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // CORS settings
+/*
 const corsOptions = {
   origin: ["https://chayavk.github.io", "http://localhost:3000", "http://127.0.0.1:5500"], 
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"]
 };
 app.use(cors(corsOptions));
+*/
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "https://chayavk.github.io",
+      "http://localhost:3000",
+      "http://127.0.0.1:5500"
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+app.options("*", cors());
 
 // Middleware
 app.use(bodyParser.json());
@@ -111,5 +132,6 @@ app.delete('/users/:id', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+
