@@ -20,7 +20,7 @@ app.use(cors({
   origin: function (origin, callback) {
     const allowedOrigins = [
       "https://chayavk.github.io",
-      "http://localhost:3000",
+      "http://localhost:5500",
       "http://127.0.0.1:5500"
     ];
 
@@ -34,7 +34,6 @@ app.use(cors({
   allowedHeaders: ["Content-Type"]
 }));
 
-app.options("*", cors());
 
 // Middleware
 app.use(bodyParser.json());
