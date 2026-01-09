@@ -1,21 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const bodyParser = require('body-parser');
-const { Pool } = require('pg');        // <-- add this
-require('dotenv').config();            // <-- add this
+const { Pool } = require('pg');        
+require('dotenv').config(); 
+          
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS settings
-/*
-const corsOptions = {
-  origin: ["https://chayavk.github.io", "http://localhost:3000", "http://127.0.0.1:5500"], 
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type"]
-};
-app.use(cors(corsOptions));
-*/
+app.use(express.json()); 
 app.use(cors({
   origin: function (origin, callback) {
     const allowedOrigins = [
@@ -31,7 +26,7 @@ app.use(cors({
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 
@@ -52,10 +47,78 @@ pool.query('SELECT NOW()', (err, res) => {
   else console.log('Postgres connected:', res.rows[0]);
 });
 
+//Add auth middleware
+function authMiddleware(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header) return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    jwt.verify(header.split(" ")[1], process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ message: "Invalid token" });
+  }
+}
+
 
 // Routes
+//Singup API
+app.post("/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    console.log("Signup body:", req.body);
+
+    const hash = await bcrypt.hash(password, 10);
+
+    await pool.query(
+      "INSERT INTO auth_users (name, email, password) VALUES ($1, $2, $3)",
+      [name, email, hash]
+    );
+    
+    res.status(201).json({ message: "Signup successful" });
+
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.status(500).json({ message: "Signup failed" });
+    console.log(req.body);
+    console.log(res.body);
+  }
+});
+
+//Login API
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  
+  const result = await pool.query(
+    "SELECT * FROM auth_users WHERE email=$1",
+    [email]
+  );
+
+  if (result.rows.length === 0)
+    return res.status(401).json({ message: "Invalid credentials" });
+
+  const user = result.rows[0];
+  const isMatch = await bcrypt.compare(password, user.password);
+console.log("Login body:", req.body);
+console.log("User from DB:", result.rows[0]);
+console.log("Password match:", isMatch);
+  
+  if (!isMatch)
+    return res.status(401).json({ message: "Invalid credentials" });
+  
+  const token = jwt.sign(
+    { id: user.id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  res.json({ token });
+});
+
+
 // 1️⃣ Get all users
-app.get('/users', async (req, res) => {
+app.get('/users',authMiddleware, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM users ORDER BY id ASC');
     res.json(result.rows);
@@ -67,7 +130,7 @@ app.get('/users', async (req, res) => {
 
 
 //1.1 Get user by id
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id',authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
@@ -81,7 +144,7 @@ app.get('/users/:id', async (req, res) => {
 
 
 // 2️⃣ Add a user
-app.post('/users', async (req, res) => {
+app.post('/users',authMiddleware, async (req, res) => {
   try {
     const { name, email, mobile, role } = req.body;
     const result = await pool.query(
@@ -97,7 +160,7 @@ app.post('/users', async (req, res) => {
 
 
 // 3️⃣ Update a user
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:id',authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, mobile, role } = req.body;
@@ -117,7 +180,7 @@ app.put('/users/:id', async (req, res) => {
 
 
 // 4️⃣ Delete a user
-app.delete('/users/:id', async (req, res) => {
+app.delete('/users/:id', authMiddleware,async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('DELETE FROM users WHERE id=$1 RETURNING *', [id]);

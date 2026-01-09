@@ -1,103 +1,139 @@
 body {
   font-family: Arial, sans-serif;
   background: url('../images/people.jpg');
-  background-size: cover;      
-  background-position: center; 
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh; 
+  min-height: 100vh;
   padding: 20px;
 }
 
 
-    h1 {
-      text-align: center;
-      color: white;
-    }
- nav ul {
-  list-style: none; /* remove bullets */
+h1 {
+  text-align: center;
+  color: white;
+}
+
+nav ul {
+  list-style: none;
+  /* remove bullets */
   display: flex;
-  gap: 20px; /* spacing between items */
+  gap: 20px;
+  /* spacing between items */
   padding: 0;
 }
 
 nav ul li a {
-  text-decoration: none; /* remove underline */
-  color: #ff6600;       /* orange color */
+  text-decoration: none;
+  /* remove underline */
+  color: #ff6600;
+  /* orange color */
   font-weight: bold;
   font-size: 18px;
   transition: color 0.3s;
 }
 
 nav ul li a:hover {
-  color: #e8eaed; /* color when hovering */
+  color: #e8eaed;
+  /* color when hovering */
 }
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: rgba(255,255,255,0.8);
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    form {
-      margin-bottom: 20px;
-    }
+form {
+  margin-bottom: 20px;
+}
 
-    input, select, button {
-      padding: 8px;
-      margin-top: 5px;
-      width: 100%;
-    }
+input,
+select,
+button {
+  padding: 8px;
+  margin-top: 5px;
+  width: 100%;
+}
 
-    .form-group {
-      margin-bottom: 10px;
-    }
+.form-group {
+  margin-bottom: 10px;
+}
 
-    .error {
-      color: red;
-      font-size: 14px;
-    }
+.error {
+  color: red;
+  font-size: 14px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    table, th, td {
-      border: 1px solid #ddd;
-    }
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
 
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
 
-    th {
-      background: #007bff;
-      color: white;
-    }
+th {
+  background: #007bff;
+  color: white;
+}
 
-    .actions button {
-      margin-right: 5px;
-      width: auto;
-    }
+.actions button {
+  margin-right: 5px;
+  width: auto;
+}
 
-    .edit {
-      background: #ffc107;
-      border: none;
-      color: #000;
-    }
+.edit {
+  background: #ffc107;
+  border: none;
+  color: #000;
+}
 
-    .delete {
-      background: #dc3545;
-      border: none;
-      color: white;
-    }
+.delete {
+  background: #dc3545;
+  border: none;
+  color: white;
+}
 
-    .save {
-      background: #28a745;
-      border: none;
-      color: white;
-    }
+.save {
+  background: #28a745;
+  border: none;
+  color: white;
+}
+
+.hint-text {
+  font-size: 12px;
+  color: #555;
+}
+
+.top-bar {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.logout-btn {
+  padding: 8px 14px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}

@@ -1,9 +1,16 @@
-//const apiUrl = "http://localhost:3000/users";
-const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
+const apiUrl = `${API_BASE_URL}/users`;
+
+//const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
 
 async function fetchUsers() {
   try {
-    const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
     const users = await response.json();
     renderUsers(users);
   } catch (error) {

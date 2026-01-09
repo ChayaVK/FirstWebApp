@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1 style="color:black">Login</h1>
+  <input id="email" type="email" placeholder="Email" required>
+<input id="password" type="password" placeholder="Password" required>
+
+<button type="button" onclick="login()">Login</button>
+<p id="Loginerror" style="color:red;font-size:12px;"></p>
+
+  <label class="hint-text">Please sign up if you are new user.</label>
+  <button onclick="gotosignup()">Signup</button>
+  <p id="signuperror" class="error"></p>
+
+
+</div>
+<script src="../js/config.js"></script>
+<script>
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorEl = document.getElementById("Loginerror");
+
+  errorEl.innerText = "";
+
+  if (!email || !password) {
+    errorEl.innerText = "Email and password are required";
+    return;
+  }
+  const res = await fetch(`${API_BASE_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  });
+
+  
+  const data = await res.json();
+
+  if (!res.ok) {
+    Loginerror.textContent = data.message;
+    return;
+  }
+  
+  localStorage.setItem("token", data.token);
+  window.location.href = "index.html";
+}
+
+function gotosignup()
+{
+  window.location.href = "signup.html";
+}
+
+
+</script>
+
+</body>
+</html>

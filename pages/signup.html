@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1 style="color:black">Signup</h1>
+  <input id="name" placeholder="Name">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button type="button" onclick="signup()">Sign Up</button>
+  <p id="SignupError" style="color:red;font-size:12px;"></p>
+
+  <label class="hint-text">Existing User ? Please login with your account.</label>
+  <button type="button" onclick="login()">Login</button>
+  <p id="Loginerror" style="color:red;font-size:12px;"></p>
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+async function signup() {
+
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const errorEl = document.getElementById("SignupError");
+
+  const payload = {
+    name: nameInput.value,
+    email: emailInput.value,
+    password: passwordInput.value
+  };
+  
+    if (!nameInput.value || !passwordInput.value || !emailInput.value) {
+    errorEl.innerText = "Name,Email and password are required";
+    return;
+  }
+  console.log("Sending from UI:", payload);
+  //await fetch("https://usermanagementui.onrender.com/signup", {
+  await fetch(`${API_BASE_URL}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+    
+  });
+   
+   console.log("Signup successful. Staying on signup page...");
+
+    window.location.href = "login.html";
+
+}
+
+function login()
+{
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

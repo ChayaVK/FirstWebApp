@@ -1,5 +1,9 @@
-//const apiUrl = "http://localhost:3000/users";
-const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
+
+const apiUrl = `${API_BASE_URL}/users`;
+
+//const apiUrl = "https://usermanagementui.onrender.com/users"; // our backend API (Production)
 
 let users = [];
 let editMode = false;
@@ -14,7 +18,12 @@ const userIdInput = document.getElementById("userId");
 // 1️⃣ Fetch users from API
 async function fetchUsers() {
   try {
-    const response = await fetch(apiUrl);
+    const token = localStorage.getItem("token");
+    const response = await fetch(apiUrl, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
     users = await response.json();
     renderUsers();
   } catch (error) {
@@ -109,11 +118,14 @@ form.addEventListener("submit", async (e) => {
     const url = editMode ? `${apiUrl}/${userIdInput.value}` : apiUrl;
     console.log(`Sending ${method} request to: ${url}`);
 
-    const response = await fetch(url, {
-      method: method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData)
-    });
+  const response = await fetch(url, {
+  method: method,
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify(userData)
+});
 
     console.log("Raw response:", response);
 
@@ -159,7 +171,12 @@ async function deleteUser(id) {
   if (!confirm("Are you sure you want to delete this user?")) return;
 
   try {
-    await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+    await fetch(`${apiUrl}/${id}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+});
     users = users.filter(u => u.id !== id);
     renderUsers();
   } catch (error) {
@@ -170,3 +187,7 @@ async function deleteUser(id) {
 // 7️⃣ Load users on page load
 fetchUsers();
 
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
