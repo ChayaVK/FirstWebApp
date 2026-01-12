@@ -137,3 +137,10 @@ th {
 .logout-btn:hover {
   background-color: #c0392b;
 }
+
+#welcomeUser {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+}

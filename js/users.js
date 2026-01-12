@@ -27,6 +27,7 @@ function renderUsers(users) {
 
     row.innerHTML = `
       <td>${user.name}</td>
+      <td>${user.gender}</td>
       <td>${user.email}</td>
       <td>${user.mobile || ""}</td>
       <td>${user.role}</td>

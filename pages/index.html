@@ -12,9 +12,12 @@
     <a href="index.html" style="color: black;">Home</a>
     <a href="users.html" style="color: black;">Users</a>
     <a href="about.html" style="color: black;">About</a>
-        <div class="top-bar">
+    <p style="text-align:left; margin-bottom:20px;" id="welcomeUser"><p></p>
+    
+   <div class="top-bar">
   <button onclick="logout()" class="logout-btn">Logout</button>
-</div>
+   
+   </div>
   </nav>
   <h1 style="color:black">User Management UI</h1>
 
@@ -27,6 +30,17 @@
         <label>Name</label>
         <input type="text" id="name">
         <small class="error" id="nameError"></small>
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="gender">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Others">Others</option>
+        </select>
+        <small class="error" id="genderError"></small>
       </div>
 
       <div class="form-group">
@@ -58,6 +72,7 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Gender</th>
           <th>Email</th>
           <th>Mobile</th>
           <th>Role</th>

@@ -108,15 +108,41 @@ console.log("Password match:", isMatch);
     return res.status(401).json({ message: "Invalid credentials" });
   
   const token = jwt.sign(
-    { id: user.id },
+    { id: user.id , name: user.name},
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 
-  res.json({ token });
+  res.json({ token,name: user.name });
 });
 
+//Password Reset API
+app.post("/reset-password", async (req, res) => {
+  try {
+    const { email, password, confirmpassword } = req.body;
 
+    console.log("Signup body:", req.body);
+
+    const hash = await bcrypt.hash(password, 10);
+    console.log("Email :",email);
+    console.log("password :",hash);
+    const result = await pool.query(
+      "UPDATE auth_users set password=$2 where email=$1",
+      [email,hash]
+    );
+
+     if (result.rowCount === 0) {
+      return res.status(404).json({ message: "User does not exist" });
+    }
+    res.status(201).json({ message: "Password reset successful" });
+
+  } catch (err) {
+    console.error("Reset error:", err);
+    res.status(500).json({ message: "Reset failed" });
+    console.log(req.body);
+    console.log(res.body);
+  }
+});
 // 1️⃣ Get all users
 app.get('/users',authMiddleware, async (req, res) => {
   try {
@@ -146,10 +172,10 @@ app.get('/users/:id',authMiddleware, async (req, res) => {
 // 2️⃣ Add a user
 app.post('/users',authMiddleware, async (req, res) => {
   try {
-    const { name, email, mobile, role } = req.body;
+    const { name, gender, email, mobile, role } = req.body;
     const result = await pool.query(
-      'INSERT INTO users (name, email, mobile, role) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, email, mobile, role]
+      'INSERT INTO users (name, gender, email, mobile, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [name, gender, email, mobile, role]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -163,11 +189,11 @@ app.post('/users',authMiddleware, async (req, res) => {
 app.put('/users/:id',authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, mobile, role } = req.body;
+    const { name, gender,email, mobile, role } = req.body;
 
     const result = await pool.query(
-      'UPDATE users SET name=$1, email=$2, mobile=$3, role=$4 WHERE id=$5 RETURNING *',
-      [name, email, mobile, role, id]
+      'UPDATE users SET name=$1, gender=$2, email=$3, mobile=$4, role=$5 WHERE id=$5 RETURNING *',
+      [name, gender, email, mobile, role, id]
     );
 
     if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });

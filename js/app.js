@@ -10,11 +10,17 @@ let editMode = false;
 
 const form = document.getElementById("userForm");
 const nameInput = document.getElementById("name");
+const genderInput = document.getElementById("gender");
 const emailInput = document.getElementById("email");
 const mobileInput = document.getElementById("mobile");
 const roleInput = document.getElementById("role");
 const userIdInput = document.getElementById("userId");
+const username = localStorage.getItem("username");
+const welcomeEl = document.getElementById("welcomeUser");
 
+if (welcomeEl && username) {
+  welcomeEl.innerText = `Welcome, ${username}`;
+}
 // 1️⃣ Fetch users from API
 async function fetchUsers() {
   try {
@@ -41,6 +47,7 @@ function renderUsers() {
 
     row.innerHTML = `
       <td>${user.name}</td>
+      <td>${user.gender}</td>
       <td>${user.email}</td>
       <td>${user.mobile}</td>
       <td>${user.role}</td>
@@ -57,12 +64,14 @@ function validateForm() {
   let valid = true;
 
   const nameError = document.getElementById("nameError");
+  const genderError = document.getElementById("genderError");
   const emailError = document.getElementById("emailError");
   const mobileError = document.getElementById("mobileError");
   const roleError = document.getElementById("roleError");
 
   // Clear errors
   nameError.textContent = "";
+  genderError.textContent="";
   emailError.textContent = "";
   mobileError.textContent = "";
   roleError.textContent = "";
@@ -94,6 +103,11 @@ function validateForm() {
     valid = false;
   }
 
+  if (!genderInput.value) {
+    genderError.textContent = "Gender is required";
+    valid = false;
+  }
+
   return valid;
 }
 
@@ -106,6 +120,7 @@ form.addEventListener("submit", async (e) => {
 
   const userData = {
     name: nameInput.value,
+    gender: genderInput.value,
     email: emailInput.value,
     mobile: mobileInput.value,
     role: roleInput.value
@@ -159,6 +174,7 @@ form.addEventListener("submit", async (e) => {
 function editUser(id) {
   const user = users.find(u => u.id === id);
   nameInput.value = user.name;
+  genderInput.value = user.gender;
   emailInput.value = user.email;
   mobileInput.value = user.mobile;
   roleInput.value = user.role;
@@ -189,5 +205,6 @@ fetchUsers();
 
 function logout() {
   localStorage.removeItem("token");
+  localStorage.removeItem("username");
   window.location.href = "login.html";
 }

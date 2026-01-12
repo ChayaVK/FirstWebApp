@@ -14,6 +14,9 @@
 <button type="button" onclick="login()">Login</button>
 <p id="Loginerror" style="color:red;font-size:12px;"></p>
 
+<button type="button" onclick="forgot_password()">Forgot Password</button>
+
+
   <label class="hint-text">Please sign up if you are new user.</label>
   <button onclick="gotosignup()">Signup</button>
   <p id="signuperror" class="error"></p>
@@ -51,6 +54,7 @@ async function login() {
   }
   
   localStorage.setItem("token", data.token);
+  localStorage.setItem("username", data.name);
   window.location.href = "index.html";
 }
 
@@ -59,7 +63,10 @@ function gotosignup()
   window.location.href = "signup.html";
 }
 
-
+function forgot_password()
+{
+  window.location.href = "forgotpassword.html";
+}
 </script>
 
 </body>
