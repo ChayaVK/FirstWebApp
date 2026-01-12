@@ -19,7 +19,7 @@ const username = localStorage.getItem("username");
 const welcomeEl = document.getElementById("welcomeUser");
 
 if (welcomeEl && username) {
-  welcomeEl.innerText = `Welcome, ${username}`;
+  welcomeEl.innerText = `Hi, ${username}`;
 }
 // 1️⃣ Fetch users from API
 async function fetchUsers() {
